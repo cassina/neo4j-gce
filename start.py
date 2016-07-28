@@ -18,6 +18,8 @@ N4J_PATH = "/neo4j"
 N4J_HOME_PATH = N4J_PATH + "neo4j-enterprise-3.0.3"
 TMP_PATH = N4J_PATH + "temp.conf"
 CONF_PATH = N4J_HOME_PATH + "/conf/neo4j.conf"
+BACKUP_SCRIPT = "/neo4j-enterprise-3.0.3/bin/neo4j-backup"
+BACKUP_PATH = N4J_PATH + '/backup/graph.db'
 
 ID_URL = "http://metadata.google.internal/computeMetadata/v1/instance/id"
 
@@ -43,10 +45,12 @@ def __check_graph():
 	# get graph.db from GCS
 	pass
 
-def __configure_backup():
+def __configure_backup(gcs):
 	# if check_alone configure this instance for backup
 	# create cron tab for backing up every 24
-	pass
+	graph = gcs.objects().get(bucket="backup", object="graph.db").execute()
+	os.system("{s}  -host 0.0.0.0 -to {r}".format(s=BACKUP_SCRIPT, r=BACKUP_PATH))
+
 
 def __check_alone():
 	# if there are no other instances in cluster 
@@ -57,10 +61,11 @@ def get_credentials():
 	credentials = GoogleCredentials.get_application_default()
 	return credentials
 
-def create_gce_service():
+def create_gc_services():
 	credentials = get_credentials()
-	service = discovery.build('compute', 'v1', credentials=credentials)
-	return service
+	gce = discovery.build("compute", "v1", credentials=credentials)
+	gcs = discovery.build("storage", "v1", credentials=credentials)
+	return gce, gcs
 
 def get_instance_id():
 	headers = {"Metadata-Flavor": "Google"}
@@ -68,30 +73,50 @@ def get_instance_id():
 	return result
 
 def get_running_vms(compute, group=GROUP, zone=ZONE, project=PROJECT):
+	is_master = False
 	body = {"instanceState": "RUNNING"}
 	response = compute.instanceGroups().listInstances(project=project, zone=zone, instanceGroup=group, body=body).execute()
-	# result = compute.instances().get(project=project, zone=zone, instance='neo4j-cluster-0dcy')
 	items = [item["instance"].split("/instances/")[1] + ":5001" for item in response["items"]]
 	result = ",".join(items)
-	return(result)
+	if len(response["items"]) <= 1:
+		is_master = True
+
+	return result, is_master
 	
 
 def get_parse_data():
 	i_id = get_instance_id()
-	ips = get_running_vms(compute=create_gce_service())
-	return i_id, ips
+	gce, gcs  = create_gc_services()
+	ips, is_master = get_running_vms(compute=compute)
+	return i_id, ips, is_master, gcs
 
-def update_neo4j_conf(i_id, ips):
+def uncomment_line(s):
+	return s.strip('#')[1]
+
+def update_neo4j_conf(i_id, ips, is_master, gcs):
 	ha_server_id = "#ha.server_id="
 	ha_initial_hosts = "#ha.initial_hosts=127.0.0.1:5001,127.0.0.1:5002,127.0.0.1:5003"
+	ha_dbms_http = "#dbms.connector.http.address=0.0.0.0:7474"
+	ha_dbms_mode = "#dbms.mode=HA"
+	ha_host_coord = "#ha.host.coordination=127.0.0.1:5001"
+	ha_host_data = "#ha.host.data=127.0.0.1:6001"
+	ha_dbms_backup = "#dbms.backup.enabled=true"
 	
 	server_id = "ha.server_id={instance_id}".format(instance_id=i_id)
 	initial_hosts = "ha.initial_hosts={hosts}".format(hosts=ips)
 
 	replace_data = {
 		ha_server_id: server_id,
-		ha_initial_hosts: initial_hosts
+		ha_initial_hosts: initial_hosts,
+		ha_dbms_http: uncomment_line(s=ha_dbms_http),
+		ha_dbms_mode: uncomment_line(s=ha_dbms_mode),
+		ha_host_coord: uncomment_line(s=ha_host_coord),
+		ha_host_data: uncomment_line(s=ha_host_data)
 	}
+
+	if is_master:
+		replace_data[ha_dbms_backup] = uncomment_line(s=ha_dbms_backup)
+		__configure_backup(gcs)
 
 	__write_neo4j_conf(replace_dict=replace_data)
 
@@ -104,8 +129,8 @@ def start_neo4j_service():
 
 def init():
 	sys_update = os.system("apt-get update")
-	i_id, ips = get_parse_data()
-	update_neo4j_conf(i_id=i_id, ips=ips)
+	i_id, ips, is_master, gcs = get_parse_data()
+	update_neo4j_conf(i_id=i_id, ips=ips, is_master=is_master)
 
 if __name__ == "__main__":
 	init()
