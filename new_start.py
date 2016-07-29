@@ -16,7 +16,7 @@ from oauth2client.client import GoogleCredentials
 from googleapiclient import discovery
 
 
-class Neo4jClusterService():
+class Neo4jClusterService:
     project = "novelistik-sb"
     zone = "us-central1-f"
     group = "neo4j-cluster"

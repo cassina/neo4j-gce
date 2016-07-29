@@ -175,3 +175,5 @@ crashlytics-build.properties
 fabric.properties
 
 /.idea/
+/start.sh
+
