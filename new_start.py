@@ -21,8 +21,8 @@ class Neo4jClusterService:
     zone = "us-central1-f"
     group = "cluster"
     n4j_path = "/neo4j"
-    n4j_home_path = n4j_path + "neo4j-enterprise-3.0.3"
-    tmp_path = n4j_path + "temp.conf"
+    n4j_home_path = n4j_path + "/neo4j-enterprise-3.0.3"
+    tmp_path = n4j_path + "/temp.conf"
     conf_path = n4j_home_path + "/conf/neo4j.conf"
     backup_script = "/neo4j-enterprise-3.0.3/bin/neo4j-backup"
     backup_path = n4j_path + '/backup/graph.db'
