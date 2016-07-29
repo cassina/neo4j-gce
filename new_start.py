@@ -37,8 +37,14 @@ class Neo4jClusterService:
     ha_dbms_backup = "#dbms.backup.enabled=true"
 
     def __init__(self):
+        self.msg(s="New Neo4j Service Initialization")
         i_id, ips = self.get_parse_data()
+        self.msg(s="Got parsed data {i_id} {ips}".format(i_id=i_id, ips=ips))
         self.update_neo4j_conf(i_id=i_id, ips=ips)
+
+    @classmethod
+    def msg(cls, s):
+        return "[[ {s} ]]".format(s=s)
 
     @classmethod
     def uncomment_line(cls, s):
@@ -64,7 +70,9 @@ class Neo4jClusterService:
         deleted = os.system('mv {s} {r}'.format(s=self.tmp_path, r=self.conf_path))
 
     def start_neo4j(self):
+        self.msg(s="Starting :7474")
         n4j_start = check_output([self.n4j_home_path + "/bin/neo4j", 'start'])
+        self.msg(s=n4j_start)
 
     def create_gc_services(self):
         credentials = self.get_credentials()
@@ -94,6 +102,8 @@ class Neo4jClusterService:
 
     def update_neo4j_conf(self, i_id, ips):
 
+        self.msg(s="Updating neo4j.conf")
+
         server_id = "ha.server_id={instance_id}".format(instance_id=i_id)
         initial_hosts = "ha.initial_hosts={hosts}".format(hosts=ips)
 
@@ -108,10 +118,13 @@ class Neo4jClusterService:
 
         self.write_neo4j_conf(replace_dict=replace_data)
 
+        self.msg(s="Updated neo4j.conf")
+
         self.start_neo4j_service()
 
     def start_neo4j_service(self):
         self.delete_tmp()
+        self.msg(s="Deleted temp.conf")
         self.start_neo4j()
 
 
