@@ -82,7 +82,7 @@ class Neo4jClusterService:
     def get_instance_id(self):
         headers = {"Metadata-Flavor": "Google"}
         result = requests.get(self.id_url, headers=headers)
-        return result.text
+        return str(result.text)
 
     def get_running_vms(self, compute):
         body = {"instanceState": "RUNNING"}
