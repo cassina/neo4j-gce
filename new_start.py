@@ -42,7 +42,7 @@ class Neo4jClusterService:
 
     @classmethod
     def uncomment_line(cls, s):
-        return s.strip('#')[1]
+        return s.strip('#')
 
     @classmethod
     def get_credentials(cls):
@@ -74,7 +74,7 @@ class Neo4jClusterService:
     def get_instance_id(self):
         headers = {"Metadata-Flavor": "Google"}
         result = requests.get(self.id_url, headers=headers)
-        return result
+        return result.text
 
     def get_running_vms(self, compute):
         body = {"instanceState": "RUNNING"}
