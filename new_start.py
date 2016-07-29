@@ -44,7 +44,7 @@ class Neo4jClusterService:
 
     @classmethod
     def msg(cls, s):
-        return "[[ {s} ]]".format(s=s)
+        print("[[ {s} ]]".format(s=s))
 
     @classmethod
     def uncomment_line(cls, s):
