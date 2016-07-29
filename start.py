@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Save graph.db in GCS (This should be backed up every day)
 # Save dir with neo4j.tar, start.py, requirements.txt
+#This is the basic Disk for all neo4j cluster instances, based on n-neo4j-server-hd. It has Java 8, Debian 8 Jessie, git, pip. Runs start.py which modifies neo4j.conf to apply unique instance id and list of running instances of the group.
 import os
 import json
 import requests

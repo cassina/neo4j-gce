@@ -19,7 +19,7 @@ from googleapiclient import discovery
 class Neo4jClusterService:
     project = "novelistik-sb"
     zone = "us-central1-f"
-    group = "neo4j-cluster"
+    group = "cluster"
     n4j_path = "/neo4j"
     n4j_home_path = n4j_path + "neo4j-enterprise-3.0.3"
     tmp_path = n4j_path + "temp.conf"
@@ -78,8 +78,9 @@ class Neo4jClusterService:
 
     def get_running_vms(self, compute):
         body = {"instanceState": "RUNNING"}
-        response = compute.instanceGroups().listInstances(project=self.project, zone=self.zone, instanceGroup=self.group,
-                                                          body=body).execute()
+        response = compute.instanceGroups().listInstances(
+            project=self.project, zone=self.zone, instanceGroup=self.group, body=body
+        ).execute()
         items = [item["instance"].split("/instances/")[1] + ":5001" for item in response["items"]]
         result = ",".join(items)
 
