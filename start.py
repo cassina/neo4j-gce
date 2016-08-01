@@ -117,14 +117,14 @@ class Neo4jClusterService:
         }
 
         self.write_neo4j_conf(replace_dict=replace_data)
-
         self.msg(s="Updated neo4j.conf")
+
+        self.delete_tmp()
+        self.msg(s="Deleted temp.conf")
 
         self.start_neo4j_service()
 
     def start_neo4j_service(self):
-        self.delete_tmp()
-        self.msg(s="Deleted temp.conf")
         self.start_neo4j()
 
 
