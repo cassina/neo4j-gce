@@ -8,6 +8,7 @@
 # graph = gcs.objects().get(bucket="backup", object="graph.db").execute()
 # os.system("{s}  -host 0.0.0.0 -to {r}".format(s=backup_script, r=backup_path))
 # google_metadata_script_runner --script-type startup
+# NEO4J_URL="http://neo4j:sandbox@130.211.22.109:8080/db/data"
 import os
 import json
 import requests
