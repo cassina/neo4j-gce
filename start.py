@@ -7,6 +7,7 @@
 # create cron tab for backing up every 24
 # graph = gcs.objects().get(bucket="backup", object="graph.db").execute()
 # os.system("{s}  -host 0.0.0.0 -to {r}".format(s=backup_script, r=backup_path))
+# google_metadata_script_runner --script-type startup
 import os
 import json
 import requests
