@@ -29,13 +29,10 @@ class Neo4jClusterService:
     id_url = "http://metadata.google.internal/computeMetadata/v1/instance/id"
     # id_ulr = "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip"
 
+    ha_dbms_connector_http = "#dbms.connector.http.address=0.0.0.0:7474"
     ha_server_id = "#ha.server_id="
     ha_initial_hosts = "#ha.initial_hosts=127.0.0.1:5001,127.0.0.1:5002,127.0.0.1:5003"
-    ha_dbms_http = "#dbms.connector.http.address=0.0.0.0:7474"
     ha_dbms_mode = "#dbms.mode=HA"
-    ha_host_coord = "#ha.host.coordination=127.0.0.1:5001"
-    ha_host_data = "#ha.host.data=127.0.0.1:6001"
-    ha_dbms_backup = "#dbms.backup.enabled=true"
 
     def __init__(self):
         self.msg(s="New Neo4j Service Initialization")
@@ -92,6 +89,7 @@ class Neo4jClusterService:
         ).execute()
         items = [item["instance"].split("/instances/")[1] + ":5001" for item in response["items"]]
         result = ",".join(items)
+        # TODO Neo4j manual specifies initial hosts should be the same in every instance.
         # Comment line above and uncomment following line for master initialization
         # result = "127.0.0.1:5001"
         # result = "10.128.0.2:5001,10.128.0.4:5001,10.128.0.6:5001,10.128.0.8:5001,10.128.0.10:5001," \
@@ -115,10 +113,8 @@ class Neo4jClusterService:
         replace_data = {
             self.ha_server_id: server_id,
             self.ha_initial_hosts: initial_hosts,
-            self.ha_dbms_http: self.uncomment_line(s=self.ha_dbms_http),
-            self.ha_dbms_mode: self.uncomment_line(s=self.ha_dbms_mode),
-            self.ha_host_coord: self.uncomment_line(s=self.ha_host_coord),
-            self.ha_host_data: self.uncomment_line(s=self.ha_host_data)
+            self.ha_dbms_connector_http: self.uncomment_line(s=self.ha_dbms_connector_http),
+            self.ha_dbms_mode: self.uncomment_line(s=self.ha_dbms_mode)
         }
 
         self.write_neo4j_conf(replace_dict=replace_data)
