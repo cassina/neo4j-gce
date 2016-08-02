@@ -90,7 +90,7 @@ class Neo4jClusterService:
             project=self.project, zone=self.zone, instanceGroup=self.group, body=body
         ).execute()
         items = [item["instance"].split("/instances/")[1] + ":5001" for item in response["items"]]
-        result = ",".join(items)
+        result = "127.0.0.1:5001," + ",".join(items)
 
         return result
 
