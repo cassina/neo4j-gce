@@ -91,11 +91,11 @@ class Neo4jClusterService:
             project=self.project, zone=self.zone, instanceGroup=self.group, body=body
         ).execute()
         items = [item["instance"].split("/instances/")[1] + ":5001" for item in response["items"]]
-        # result = ",".join(items)
+        result = ",".join(items)
         # Comment line above and uncomment following line for master initialization
         # result = "127.0.0.1:5001"
-        result = "10.128.0.2:5001,10.128.0.4:5001,10.128.0.6:5001,10.128.0.8:5001,10.128.0.10:5001," \
-                 "10.128.0.3:5001,10.128.0.5:5001,10.128.0.7:5001,10.128.0.9:5001,10.128.0.11:5001"
+        # result = "10.128.0.2:5001,10.128.0.4:5001,10.128.0.6:5001,10.128.0.8:5001,10.128.0.10:5001," \
+        #          "10.128.0.3:5001,10.128.0.5:5001,10.128.0.7:5001,10.128.0.9:5001,10.128.0.11:5001"
 
         return result
 
