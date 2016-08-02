@@ -27,6 +27,7 @@ class Neo4jClusterService:
     backup_script = "/neo4j-enterprise-3.0.3/bin/neo4j-backup"
     backup_path = n4j_path + '/backup/graph.db'
     id_url = "http://metadata.google.internal/computeMetadata/v1/instance/id"
+    # id_ulr = "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip"
 
     ha_server_id = "#ha.server_id="
     ha_initial_hosts = "#ha.initial_hosts=127.0.0.1:5001,127.0.0.1:5002,127.0.0.1:5003"
@@ -90,9 +91,11 @@ class Neo4jClusterService:
             project=self.project, zone=self.zone, instanceGroup=self.group, body=body
         ).execute()
         items = [item["instance"].split("/instances/")[1] + ":5001" for item in response["items"]]
-        result = ",".join(items)
+        # result = ",".join(items)
         # Comment line above and uncomment following line for master initialization
         # result = "127.0.0.1:5001"
+        result = "10.128.0.2:5001,10.128.0.4:5001,10.128.0.6:5001,10.128.0.8:5001,10.128.0.10:5001," \
+                 "10.128.0.3:5001,10.128.0.5:5001,10.128.0.7:5001,10.128.0.9:5001,10.128.0.11:5001"
 
         return result
 
