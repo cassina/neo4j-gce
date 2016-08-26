@@ -37,8 +37,8 @@ class Neo4jClusterService:
     ha_initial_hosts = "#ha.initial_hosts=127.0.0.1:5001,127.0.0.1:5002,127.0.0.1:5003"
     ha_dbms_mode = "#dbms.mode=HA"
     ha_status_auth = "#ha_status_auth_enabled=false"
-    ha_host_data = " #ha.host.data:127.0.0.1:6001"
-    ha_host_coord = "#ha.host.coordination:127.0.0.1:5001"
+    ha_host_data = "#ha.host.data=127.0.0.1:6001"
+    ha_host_coord = "#ha.host.coordination=127.0.0.1:5001"
 
     def __init__(self):
         self.msg(s="New Neo4j Service Initialization")
