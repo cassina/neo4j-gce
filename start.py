@@ -19,7 +19,7 @@ from googleapiclient import discovery
 
 
 class Neo4jClusterService:
-    project = "novelistik-sb"
+    project = "fleet-passkey-767"
     zone = "us-central1-f"
     group = "neo4j-cluster"
     n4j_path = "/neo4j"
