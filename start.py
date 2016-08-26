@@ -36,7 +36,7 @@ class Neo4jClusterService:
     ha_server_id = "#ha.server_id="
     ha_initial_hosts = "#ha.initial_hosts=127.0.0.1:5001,127.0.0.1:5002,127.0.0.1:5003"
     ha_dbms_mode = "#dbms.mode=HA"
-    ha_status_auth = "#ha_status_auth_enabled=false"
+    ha_status_auth = "#dbms.security.ha_status_auth_enabled=false"
     ha_host_data = "#ha.host.data=127.0.0.1:6001"
     ha_host_coord = "#ha.host.coordination=127.0.0.1:5001"
 
@@ -88,7 +88,7 @@ class Neo4jClusterService:
         server_id = requests.get(self.id_url, headers=headers)
         server_ip = requests.get(self.ip_url, headers=headers)
 
-        return str(server_id.text[0:6]), str(server_ip)
+        return str(server_id.text[0:6]), str(server_ip.text)
 
     def get_running_vms(self, compute):
         body = {"instanceState": "RUNNING"}
@@ -118,8 +118,8 @@ class Neo4jClusterService:
 
         server_id = "ha.server_id={instance_id}".format(instance_id=i_id)
         initial_hosts = "ha.initial_hosts={hosts}".format(hosts=ips)
-        host_data = server_ip + ":6001"
-        host_coord = server_ip + ":5001"
+        host_data = "ha.host.data={ip}:6001".format(ip=server_ip)
+        host_coord = "ha.host.coordination={ip}:5001".format(ip=server_ip)
 
         replace_data = {
             self.ha_server_id: server_id,
