@@ -96,6 +96,7 @@ class Neo4jClusterService:
             project=self.project, zone=self.zone, instanceGroup=self.group, body=body
         ).execute()
         items = [item["instance"].split("/instances/")[1] + ":5001" for item in response["items"]]
+        items.append('neo4j-cluster-master:5001')
         result = ",".join(items)
         # TODO Neo4j manual specifies initial hosts should be the same in every instance.
         # Comment line above and uncomment following line for master initialization
