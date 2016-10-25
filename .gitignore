@@ -178,3 +178,4 @@ fabric.properties
 
 /startup_script.sh
 /notes
+/neo4j-cluster.iml
