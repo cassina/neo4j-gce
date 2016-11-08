@@ -19,7 +19,7 @@ from googleapiclient import discovery
 
 
 class Neo4jClusterService:
-    project = "novelistik-sb"
+    project = "fleet-passkey-767"
     zone = "us-central1-f"
     group = "neo4j-cluster"
     n4j_path = "/neo4j"
@@ -31,6 +31,9 @@ class Neo4jClusterService:
     id_url = "http://metadata.google.internal/computeMetadata/v1/instance/id"
     ip_url = "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip"
     # id_ulr = "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip"
+    # ha.pull_interval=10 / ha.pull_interval=3
+    # #ha.tx_push_factor=1 / ha.tx_push_factor=1
+    # #ha.tx_push_strategy=fixed_ascending / ha.tx_push_strategy=round_robin
 
     ha_dbms_connector_http = "#dbms.connector.http.address=0.0.0.0:7474"
     ha_server_id = "#ha.server_id="
