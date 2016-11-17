@@ -30,10 +30,16 @@ class Neo4jClusterService:
     backup_path = n4j_path + '/backup/graph.db'
     id_url = "http://metadata.google.internal/computeMetadata/v1/instance/id"
     ip_url = "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip"
+
+    # Considerations for cluster configuration:
     # id_ulr = "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip"
     # ha.pull_interval=10 / ha.pull_interval=3
     # #ha.tx_push_factor=1 / ha.tx_push_factor=1
     # #ha.tx_push_strategy=fixed_ascending / ha.tx_push_strategy=round_robin
+    # WARNING: Max 1024 open files allowed, minimum of 40000 recommended. See the Neo4j manual.
+    # Nov  8 18:38:27 neo4j-cluster-jc5u startup-script: INFO startup-script: Started neo4j (pid 700). By default, it is available at http://localhost:7474/
+    # Nov  8 18:38:27 neo4j-cluster-jc5u startup-script: INFO startup-script: This HA instance will be operational once it has joined the cluster.
+    # Nov  8 18:38:27 neo4j-cluster-jc5u startup-script: INFO startup-script: See /neo4j/neo4j-enterprise-3.0.3/logs/neo4j.log for current status.
 
     ha_dbms_connector_http = "#dbms.connector.http.address=0.0.0.0:7474"
     ha_server_id = "#ha.server_id="
